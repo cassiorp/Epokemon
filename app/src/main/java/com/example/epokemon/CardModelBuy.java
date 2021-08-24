@@ -7,6 +7,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public class CardModelBuy extends RecyclerView.ViewHolder{
     public TextView attack;
     public TextView defense;
     public Button buttonComprar;
-
+    public CardView cardView;
     public CardModelBuy(@NonNull @NotNull View itemView) {
         super(itemView);
 
@@ -32,6 +33,7 @@ public class CardModelBuy extends RecyclerView.ViewHolder{
         defense = itemView.findViewById(R.id.defenseBuy);
         buttonComprar = itemView.findViewById(R.id.buttonBuy);
         ratingBar = itemView.findViewById(R.id.ratingBarToBuy);
+        cardView = itemView.findViewById(R.id.card);
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.epokemon;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
     private Context ativityEmExecucao;
     private View view;
     private SearchView searchView;
-    private RotinaDAO rotinaDAO;
+   // private RotinaDAO rotinaDAO;
 
     public AdapterRecyclerViewComprados(List<PokemonModel> valores, View view) {
         this.list = valores;
@@ -49,13 +50,13 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
         this.view = view;
     }
 
-    public RotinaDAO getPokemonDAO() {
-        return rotinaDAO;
-    }
-
-    public void setPokemonDAO(RotinaDAO rotinaDAO) {
-        this.rotinaDAO = rotinaDAO;
-    }
+//    public RotinaDAO getPokemonDAO() {
+//        return rotinaDAO;
+//    }
+//
+//    public void setPokemonDAO(RotinaDAO rotinaDAO) {
+//        this.rotinaDAO = rotinaDAO;
+//    }
 
     public List<PokemonModel> getToSearch() {
         return toSearch;
@@ -124,7 +125,6 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
         ativityEmExecucao = parent.getContext();
         final CardComprados holder = new CardComprados(LayoutInflater.from(ativityEmExecucao)
                 .inflate(R.layout.card_view_comprados, parent, false));
-
         return holder;
     }
 
@@ -138,13 +138,13 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
         holder.hp.setText("HP: " + conteudoLinha.getHp());
         holder.attack.setText("Attack: " + conteudoLinha.getAttack());
         holder.defense.setText("Defense: " + conteudoLinha.getDefense());
-
+        holder.ratingBar.setRating(conteudoLinha.getRating());
         holder.buttonExcluir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //delete(position);
                 Log.i("Delete", "delete");
-                delete(position);
+                delete(conteudoLinha);
                 notifyDataSetChanged();
             }
         });
@@ -158,25 +158,32 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
             }
         });
 
-        holder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                RotinaModel toSave = new RotinaModel(conteudoLinha.getId(), rating);
-                rotinaDAO.inserir(toSave);
-                System.out.println(rotinaDAO.listarTodos());
-            }
-        });
+//        holder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+//            @Override
+//            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+//                atualizar(rating, conteudoLinha);
+//            }
+//        });
     }
+
+//    private void atualizar(float rating, PokemonModel pokemonModel) {
+//        System.out.println(pokemonModel.getName());
+//        RotinaModel toSave = new RotinaModel(pokemonModel.getId(), rating);
+//        rotinaDAO.inserir(toSave);
+//        System.out.println(rotinaDAO.listarTodos());
+//        pokemonModel.setRating(rating);
+//        new Handler().postDelayed(() ->  notifyDataSetChanged(), 1000);
+//    }
+
 
     @Override
     public int getItemCount() {
         return list != null ? list.size() : 0;
     }
 
-    public void delete(Integer pos) {
-        PokemonModel pokemonModel = list.get(pos);
+    public void delete(PokemonModel pokemonModel) {
         System.out.println(pokemonModel.toString());
-        String url = (PokeApiService.getCrudUlr() + "/" + pokemonModel.getId());
+        String url = (PokeApiService.getCrudUlr() + "/" + pokemonModel.getName());
         RequestQueue requestQueue = Volley.newRequestQueue(ativityEmExecucao.getApplicationContext());
         StringRequest dr = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String>() {

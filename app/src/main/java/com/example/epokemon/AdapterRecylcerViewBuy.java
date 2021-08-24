@@ -15,6 +15,7 @@ import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -123,22 +124,23 @@ public class AdapterRecylcerViewBuy extends RecyclerView.Adapter<CardModelBuy> i
     @Override
     public void onBindViewHolder(@NonNull @NotNull CardModelBuy holder, int position) {
 
-        PokemonModel conteudoLinha = list.get(position);
+        PokemonModel pokemonHolder = list.get(position);
 
-        String imageUri = conteudoLinha.getImage();
+        String imageUri = pokemonHolder.getImage();
 
         Picasso.with(ativityEmExecucao.getApplicationContext()).load(imageUri).into(holder.image);
 
-        holder.name.setText("Nome: " + String.valueOf(conteudoLinha.getName()));
-        holder.price.setText("R$"+conteudoLinha.getPrice() + ",00");
-        holder.hp.setText("HP: " +conteudoLinha.getHp());
-        holder.attack.setText("Attack: " +conteudoLinha.getAttack());
-        holder.defense.setText("Defense: " +conteudoLinha.getDefense());
-        holder.ratingBar.setRating(conteudoLinha.getRating());
+        holder.name.setText("Nome: " + String.valueOf(pokemonHolder.getName()));
+        holder.price.setText("R$" + pokemonHolder.getPrice() + ",00");
+        holder.hp.setText("HP: " + pokemonHolder.getHp());
+        holder.attack.setText("Attack: " + pokemonHolder.getAttack());
+        holder.defense.setText("Defense: " + pokemonHolder.getDefense());
+        holder.ratingBar.setRating(pokemonHolder.getRating());
+
         holder.buttonComprar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buy(position);
+                buy(pokemonHolder);
             }
         });
 
@@ -158,12 +160,10 @@ public class AdapterRecylcerViewBuy extends RecyclerView.Adapter<CardModelBuy> i
         return list != null ? list.size() : 0;
     }
 
-    public void buy(Integer pos) {
-
+    public void buy(PokemonModel pokemonModel) {
         String postUrl = PokeApiService.getCrudUlr();
         RequestQueue requestQueue = Volley.newRequestQueue(ativityEmExecucao.getApplicationContext());
         JSONObject postData = new JSONObject();
-        PokemonModel pokemonModel = list.get(pos);
         Gson gson = new Gson();
         try {
             postData.put("id", pokemonModel.getId());
@@ -182,6 +182,7 @@ public class AdapterRecylcerViewBuy extends RecyclerView.Adapter<CardModelBuy> i
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.i("Response POST", String.valueOf(response));
                         Snackbar.make(view, R.string.text_label, Snackbar.LENGTH_SHORT)
                                 .show();
                         PokemonModel added = gson.fromJson(String.valueOf(response), PokemonModel.class);

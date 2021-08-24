@@ -14,6 +14,9 @@ public interface RotinaDAO {
     @Query("SELECT * FROM RotinaModel")
     List<RotinaModel> listarTodos();
 
+    @Query("DELETE FROM RotinaModel")
+    void deleteAll();
+
     @Update
     void atualizar(RotinaModel rotinaModel);
 

@@ -2,12 +2,13 @@ package com.example.epokemon.ui.login;
 
 import android.app.Activity;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -27,9 +28,6 @@ import android.widget.Toast;
 
 import com.example.epokemon.MainActivity;
 import com.example.epokemon.R;
-import com.example.epokemon.ui.home.HomeFragment;
-import com.example.epokemon.ui.login.LoginViewModel;
-import com.example.epokemon.ui.login.LoginViewModelFactory;
 import com.example.epokemon.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -46,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
+
 
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
@@ -137,4 +136,5 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
+
 }

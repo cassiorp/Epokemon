@@ -1,5 +1,6 @@
 package com.example.epokemon;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -28,8 +29,10 @@ import java.util.List;
 public class PokeApiService {
 
     private Context context;
-    private static final String FETHC_POKE_API_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/pokeapi";
-    private static final String CRUD_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/store";
+    private static final String FETHC_POKE_API_ULR = "http://172.28.0.1:8000/v1/pokeapi";
+   // private static final String FETHC_POKE_API_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/pokeapi";
+    private static final String CRUD_ULR = "http://172.28.0.1:8000/v1/store";
+   // private static final String CRUD_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/store";
 
     public PokeApiService(Context context) {
         this.context = context;
@@ -43,6 +46,7 @@ public class PokeApiService {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            Log.i("RESPMSE FETCH DATA", response);
                             models.addAll(mountData(response));
                             adapterRecylcerViewBuy.setList(models);
                             adapterRecylcerViewBuy.notifyDataSetChanged();
@@ -86,22 +90,22 @@ public class PokeApiService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void update(List<RotinaDTO> rotinas) throws JSONException {
+    public void update(RotinaDTO rotinas) throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(context);
         JSONObject jsonBody = new JSONObject();
-        JSONArray rotinasArray = new JSONArray();
-
-        for(RotinaDTO rotina: rotinas) {
-            rotinasArray.put(rotina);
+        try {
+            jsonBody.put("id", rotinas.getId());
+            jsonBody.put("rating", rotinas.getRating());
+        }catch (RuntimeException e){
+            e.printStackTrace();
         }
 
-        jsonBody.put("rotinas", rotinasArray);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FETHC_POKE_API_ULR, jsonBody,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, FETHC_POKE_API_ULR, jsonBody,
                 new Response.Listener<JSONObject>() {
+                    @SuppressLint("LongLogTag")
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("Quase");
+                        Log.i("Response do upadate rotina",String.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override

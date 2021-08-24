@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.epokemon.repository.RotinaModel;
+
 import org.jetbrains.annotations.NotNull;
 
 public class CardComprados extends RecyclerView.ViewHolder{
@@ -31,6 +33,8 @@ public class CardComprados extends RecyclerView.ViewHolder{
         attack = itemView.findViewById(R.id.attackComprado);
         defense = itemView.findViewById(R.id.defenseComprado);
         buttonExcluir = itemView.findViewById(R.id.buttonDeletar);
+
+
     }
 
 

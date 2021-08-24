@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private View viewHome;
     private View viewStore;
 
-    private RotinaDAO rotinaDAO;
+    //private RotinaDAO rotinaDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         // inicializar a base de dados
         BaseDeDadosDaApp db = BaseDeDadosDaApp.getInstance(this);
 
-        rotinaDAO = db.getRotinaDAO();
-        adaptadorDoRecyclerViewComprados.setPokemonDAO(rotinaDAO);
+//        rotinaDAO = db.getRotinaDAO();
+//        adaptadorDoRecyclerViewComprados.setPokemonDAO(rotinaDAO);
 
         new Thread(new Runnable() {
             @Override
@@ -117,19 +119,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+//        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        mShakeDetector = new ShakeDetector(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake() {
-                if(!pokeApiResponse.isEmpty()){
-                    Integer sorteado = new Random().nextInt(pokeApiResponse.size());
-                    PokemonModel pokemonSorteado = pokeApiResponse.get(sorteado);
-                    searchView.setQuery(pokemonSorteado.getName(), true);
-                }
-            }
-        });
+//        mShakeDetector = new ShakeDetector(new ShakeDetector.OnShakeListener() {
+//            @Override
+//            public void onShake() {
+//                if (!pokeApiResponse.isEmpty()) {
+//                    List<PokemonModel> copy = new ArrayList<>(pokeApiResponse);
+//                    Collections.shuffle(copy);
+//                    System.out.println(copy.get(0).getName());
+////                    Integer sorteado = new Random().nextInt(pokeApiResponse.size());
+////                    PokemonModel pokemonSorteado = pokeApiResponse.get(sorteado);
+//                    searchView.setQuery(copy.get(0).getName(), true);
+//                }
+//            }
+//        });
+
+//        BroadcastReceiver receiverPowerAdapter = new PowerConnectionReceiver();
+//        IntentFilter filterPowerAdapter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
+//        this.registerReceiver(receiverPowerAdapter, filterPowerAdapter);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -141,18 +150,6 @@ public class MainActivity extends AppCompatActivity {
         navView.setSelectedItemId(R.id.navigation_home);
     }
 
-    public void createAlarm() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
@@ -164,41 +161,41 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    }
-
-    @Override
-    public void onPause() {
-        mSensorManager.unregisterListener(mShakeDetector);
-        super.onPause();
-    }
-
-    public ShakeDetector getmShakeDetector() {
-        return mShakeDetector;
-    }
-
-    public void setmShakeDetector(ShakeDetector mShakeDetector) {
-        this.mShakeDetector = mShakeDetector;
-    }
-
-    public SensorManager getmSensorManager() {
-        return mSensorManager;
-    }
-
-    public void setmSensorManager(SensorManager mSensorManager) {
-        this.mSensorManager = mSensorManager;
-    }
-
-    public Sensor getmAccelerometer() {
-        return mAccelerometer;
-    }
-
-    public void setmAccelerometer(Sensor mAccelerometer) {
-        this.mAccelerometer = mAccelerometer;
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        mSensorManager.unregisterListener(mShakeDetector);
+//        super.onPause();
+//    }
+//
+//    public ShakeDetector getmShakeDetector() {
+//        return mShakeDetector;
+//    }
+//
+//    public void setmShakeDetector(ShakeDetector mShakeDetector) {
+//        this.mShakeDetector = mShakeDetector;
+//    }
+//
+//    public SensorManager getmSensorManager() {
+//        return mSensorManager;
+//    }
+//
+//    public void setmSensorManager(SensorManager mSensorManager) {
+//        this.mSensorManager = mSensorManager;
+//    }
+//
+//    public Sensor getmAccelerometer() {
+//        return mAccelerometer;
+//    }
+//
+//    public void setmAccelerometer(Sensor mAccelerometer) {
+//        this.mAccelerometer = mAccelerometer;
+//    }
 
     public ActivityMainBinding getBinding() {
         return binding;
@@ -288,11 +285,11 @@ public class MainActivity extends AppCompatActivity {
         this.pokeApiService = pokeApiService;
     }
 
-    public RotinaDAO getRotinaDAO() {
-        return rotinaDAO;
-    }
-
-    public void setRotinaDAO(RotinaDAO rotinaDAO) {
-        this.rotinaDAO = rotinaDAO;
-    }
+//    public RotinaDAO getRotinaDAO() {
+//        return rotinaDAO;
+//    }
+//
+//    public void setRotinaDAO(RotinaDAO rotinaDAO) {
+//        this.rotinaDAO = rotinaDAO;
+//    }
 }
