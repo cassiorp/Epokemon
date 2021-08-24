@@ -28,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.epokemon.repository.PokemonModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -133,7 +134,7 @@ public class AdapterRecylcerViewBuy extends RecyclerView.Adapter<CardModelBuy> i
         holder.hp.setText("HP: " +conteudoLinha.getHp());
         holder.attack.setText("Attack: " +conteudoLinha.getAttack());
         holder.defense.setText("Defense: " +conteudoLinha.getDefense());
-
+        holder.ratingBar.setRating(conteudoLinha.getRating());
         holder.buttonComprar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,18 +160,20 @@ public class AdapterRecylcerViewBuy extends RecyclerView.Adapter<CardModelBuy> i
 
     public void buy(Integer pos) {
 
-        String postUrl = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/store";
+        String postUrl = PokeApiService.getCrudUlr();
         RequestQueue requestQueue = Volley.newRequestQueue(ativityEmExecucao.getApplicationContext());
         JSONObject postData = new JSONObject();
         PokemonModel pokemonModel = list.get(pos);
-
+        Gson gson = new Gson();
         try {
+            postData.put("id", pokemonModel.getId());
             postData.put("name", pokemonModel.getName());
             postData.put("image", pokemonModel.getImage());
             postData.put("price", pokemonModel.getPrice());
             postData.put("hp", pokemonModel.getHp());
             postData.put("attack", pokemonModel.getAttack());
             postData.put("defense", pokemonModel.getDefense());
+            postData.put("rating", pokemonModel.getRating());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -181,8 +184,8 @@ public class AdapterRecylcerViewBuy extends RecyclerView.Adapter<CardModelBuy> i
                     public void onResponse(JSONObject response) {
                         Snackbar.make(view, R.string.text_label, Snackbar.LENGTH_SHORT)
                                 .show();
-                        Log.i("POST", response.toString());
-                        adapterRecyclerViewComprados.getList().add(pokemonModel);
+                        PokemonModel added = gson.fromJson(String.valueOf(response), PokemonModel.class);
+                        adapterRecyclerViewComprados.getList().add(added);
                         adapterRecyclerViewComprados.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {

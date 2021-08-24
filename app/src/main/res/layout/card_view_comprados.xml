@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:strokeWidth="1dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/stroke_color"
+        app:strokeWidth="1dp"
         tools:ignore="MissingConstraints">
 
 
@@ -29,8 +29,8 @@
                 android:id="@+id/imageViewComprado"
                 android:layout_width="match_parent"
                 android:layout_height="194dp"
-                app:srcCompat="@drawable/ic_baseline_keyboard_voice_24"
                 android:contentDescription="TITLE"
+                app:srcCompat="@drawable/ic_baseline_keyboard_voice_24"
                 tools:ignore="VectorDrawableCompat" />
 
             <LinearLayout
@@ -45,15 +45,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TITLE"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    />
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+
                 <TextView
                     android:id="@+id/priceComprado"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TITLE"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    />
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+
                 <TextView
                     android:id="@+id/hpComprado"
                     android:layout_width="wrap_content"
@@ -61,8 +61,8 @@
                     android:layout_marginTop="8dp"
                     android:text="NAME"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
-                    />
+                    android:textColor="?android:attr/textColorSecondary" />
+
                 <TextView
                     android:id="@+id/attackComprado"
                     android:layout_width="wrap_content"
@@ -70,8 +70,7 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/supporting_text"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
-                    />
+                    android:textColor="?android:attr/textColorSecondary" />
 
                 <TextView
                     android:id="@+id/defenseComprado"
@@ -80,27 +79,35 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/supporting_text"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
-                    />
+                    android:textColor="?android:attr/textColorSecondary" />
 
             </LinearLayout>
 
             <!-- Buttons -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:orientation="horizontal">
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonDeletar"
+                    style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/deletar"
+                    android:layout_marginRight="8dp"
                     android:backgroundTint="#ff0000"
-                    android:textColor="@color/white"
-                    style="?attr/borderlessButtonStyle"
-                    android:layout_marginRight="8dp" />
+                    android:text="@string/deletar"
+                    android:textColor="@color/white" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:progressTint="@color/yellow"
+                    />
+
             </LinearLayout>
 
         </LinearLayout>

@@ -3,6 +3,7 @@ package com.example.epokemon;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 
 public class CardComprados extends RecyclerView.ViewHolder{
-
+    public RatingBar ratingBar;
     public ImageView image;
     public TextView name;
     public TextView price;
@@ -22,7 +23,7 @@ public class CardComprados extends RecyclerView.ViewHolder{
 
     public CardComprados(@NonNull @NotNull View itemView) {
         super(itemView);
-
+        ratingBar = itemView.findViewById(R.id.ratingBar);
         image = itemView.findViewById(R.id.imageViewComprado);
         name = itemView.findViewById(R.id.nameComprado);
         price = itemView.findViewById(R.id.priceComprado);

@@ -8,17 +8,9 @@ public class PokemonModel {
     private String hp;
     private String attack;
     private String defense;
+    private float rating;
 
-    public PokemonModel(String image, String name, String price, String hp, String attack, String defense) {
-        this.image = image;
-        this.name = name;
-        this.price = price;
-        this.hp = hp;
-        this.attack = attack;
-        this.defense = defense;
-    }
-
-    public PokemonModel(String id, String image, String name, String price, String hp, String attack, String defense) {
+    public PokemonModel(String id, String image, String name, String price, String hp, String attack, String defense, float rating) {
         this.id = id;
         this.image = image;
         this.name = name;
@@ -26,6 +18,10 @@ public class PokemonModel {
         this.hp = hp;
         this.attack = attack;
         this.defense = defense;
+        this.rating = rating;
+    }
+
+    public PokemonModel() {
     }
 
     public String getId() {
@@ -82,5 +78,13 @@ public class PokemonModel {
 
     public void setDefense(String defense) {
         this.defense = defense;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }
