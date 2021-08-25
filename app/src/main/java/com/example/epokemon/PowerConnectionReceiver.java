@@ -42,27 +42,30 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         rotinaDAO = baseDeDadosDaApp.getRotinaDAO();
 
         List<RotinaModel> rotinaModels = rotinaDAO.listarTodos();
+        System.out.println("Tamannho rodtinas models" + rotinaModels.size());
         rotinaDAO.deleteAll();
         adapterRecylcerViewBuy = (((MainActivity) context).getAdapterRecylcerViewBuy());
         pokeApiResponse = (((MainActivity) context).getPokeApiResponse());
+        List<RotinaDTO> dtos = new ArrayList<>();
         try {
             for (RotinaModel rotinaModel : rotinaModels) {
-                RotinaDTO dto = new RotinaDTO(rotinaModel.getId(), rotinaModel.getRating());
-                System.out.println(dto.getId());
-                pokeApiService.update(dto);
+                dtos.add(new RotinaDTO(rotinaModel.getId(), rotinaModel.getRating()));
             }
 
+            pokeApiService.update(dtos);
 
-//                new Handler().postDelayed(
-//                        () -> pokeApiService.fetchData(pokeApiResponse, adapterRecylcerViewBuy),
-//                        2000);
-//                new Handler().postDelayed(
-//                        () -> adapterRecylcerViewBuy.notifyDataSetChanged(),
-//                        1000);
 
         } catch (RuntimeException | JSONException e) {
             e.printStackTrace();
         }
+
+        new Handler().postDelayed(
+                () -> pokeApiService.fetchData(pokeApiResponse, adapterRecylcerViewBuy),
+                5000);
+        new Handler().postDelayed(
+                () -> adapterRecylcerViewBuy.notifyDataSetChanged(),
+                5000);
+
 
     }
 }

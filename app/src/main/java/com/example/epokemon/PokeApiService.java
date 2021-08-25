@@ -29,10 +29,10 @@ import java.util.List;
 public class PokeApiService {
 
     private Context context;
-    private static final String FETHC_POKE_API_ULR = "http://172.28.0.1:8000/v1/pokeapi";
-   // private static final String FETHC_POKE_API_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/pokeapi";
-    private static final String CRUD_ULR = "http://172.28.0.1:8000/v1/store";
-   // private static final String CRUD_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/store";
+    //private static final String FETHC_POKE_API_ULR = "http://172.28.0.1:8000/v1/pokeapi";
+    private static final String FETHC_POKE_API_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/pokeapi";
+    //private static final String CRUD_ULR = "http://172.28.0.1:8000/v1/store";
+    private static final String CRUD_ULR = "http://pokeapi-env.eba-zambya2i.us-east-2.elasticbeanstalk.com/v1/store";
 
     public PokeApiService(Context context) {
         this.context = context;
@@ -46,7 +46,8 @@ public class PokeApiService {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.i("RESPMSE FETCH DATA", response);
+                            Log.i("RESPONSE FETCH DATA", response);
+                            models.clear();
                             models.addAll(mountData(response));
                             adapterRecylcerViewBuy.setList(models);
                             adapterRecylcerViewBuy.notifyDataSetChanged();
@@ -67,13 +68,14 @@ public class PokeApiService {
         RequestQueue queue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, CRUD_ULR,
                 new Response.Listener<String>() {
+                    @SuppressLint("LongLogTag")
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onResponse(String response) {
                         try {
+                            Log.i("RESPONSE FETCH COMPRADOS", response);
                             models.addAll(mountData(response));
-                            System.out.println("FECT COMPRADOS");
-                            models.stream().forEach(m -> System.out.println(m.getId() + "\n" +m.getName()));
+                            models.stream().forEach(m -> System.out.println(m.getId() + "\n" + m.getName()));
                             adapterRecyclerViewComprados.setList(models);
                             adapterRecyclerViewComprados.notifyDataSetChanged();
                         } catch (JSONException e) {
@@ -90,30 +92,33 @@ public class PokeApiService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void update(RotinaDTO rotinas) throws JSONException {
+    public void update(List<RotinaDTO> rotinas) throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(context);
         JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("id", rotinas.getId());
-            jsonBody.put("rating", rotinas.getRating());
-        }catch (RuntimeException e){
-            e.printStackTrace();
+        for (RotinaDTO rotina : rotinas) {
+            try {
+                jsonBody.put("id", rotina.getId());
+                jsonBody.put("rating", rotina.getRating());
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, FETHC_POKE_API_ULR, jsonBody,
+                    new Response.Listener<JSONObject>() {
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.i("Response do upadate rotina", String.valueOf(response));
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            queue.add(jsonObjectRequest);
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, FETHC_POKE_API_ULR, jsonBody,
-                new Response.Listener<JSONObject>() {
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("Response do upadate rotina",String.valueOf(response));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-        queue.add(jsonObjectRequest);
     }
 
 

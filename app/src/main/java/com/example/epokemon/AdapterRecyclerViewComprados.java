@@ -42,7 +42,7 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
     private Context ativityEmExecucao;
     private View view;
     private SearchView searchView;
-   // private RotinaDAO rotinaDAO;
+    private RotinaDAO rotinaDAO;
 
     public AdapterRecyclerViewComprados(List<PokemonModel> valores, View view) {
         this.list = valores;
@@ -50,13 +50,13 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
         this.view = view;
     }
 
-//    public RotinaDAO getPokemonDAO() {
-//        return rotinaDAO;
-//    }
-//
-//    public void setPokemonDAO(RotinaDAO rotinaDAO) {
-//        this.rotinaDAO = rotinaDAO;
-//    }
+    public RotinaDAO getPokemonDAO() {
+        return rotinaDAO;
+    }
+
+    public void setPokemonDAO(RotinaDAO rotinaDAO) {
+        this.rotinaDAO = rotinaDAO;
+    }
 
     public List<PokemonModel> getToSearch() {
         return toSearch;
@@ -130,21 +130,21 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull CardComprados holder, int position) {
-        PokemonModel conteudoLinha = list.get(position);
-        String imageUri = conteudoLinha.getImage();
+        PokemonModel pokemonHolder = list.get(position);
+        String imageUri = pokemonHolder.getImage();
         Picasso.with(ativityEmExecucao.getApplicationContext()).load(imageUri).into(holder.image);
-        holder.name.setText("Nome: " + String.valueOf(conteudoLinha.getName()));
-        holder.price.setText("R$" + conteudoLinha.getPrice() + ",00");
-        holder.hp.setText("HP: " + conteudoLinha.getHp());
-        holder.attack.setText("Attack: " + conteudoLinha.getAttack());
-        holder.defense.setText("Defense: " + conteudoLinha.getDefense());
-        holder.ratingBar.setRating(conteudoLinha.getRating());
+        holder.name.setText("Nome: " + String.valueOf(pokemonHolder.getName()));
+        holder.price.setText("R$" + pokemonHolder.getPrice() + ",00");
+        holder.hp.setText("HP: " + pokemonHolder.getHp());
+        holder.attack.setText("Attack: " + pokemonHolder.getAttack());
+        holder.defense.setText("Defense: " + pokemonHolder.getDefense());
+        holder.ratingBar.setRating(pokemonHolder.getRating());
         holder.buttonExcluir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //delete(position);
                 Log.i("Delete", "delete");
-                delete(conteudoLinha);
+                delete(pokemonHolder);
                 notifyDataSetChanged();
             }
         });
@@ -158,22 +158,22 @@ public class AdapterRecyclerViewComprados extends RecyclerView.Adapter<CardCompr
             }
         });
 
-//        holder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-//            @Override
-//            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-//                atualizar(rating, conteudoLinha);
-//            }
-//        });
+        holder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                atualizar(rating, pokemonHolder);
+            }
+        });
     }
 
-//    private void atualizar(float rating, PokemonModel pokemonModel) {
-//        System.out.println(pokemonModel.getName());
-//        RotinaModel toSave = new RotinaModel(pokemonModel.getId(), rating);
-//        rotinaDAO.inserir(toSave);
-//        System.out.println(rotinaDAO.listarTodos());
-//        pokemonModel.setRating(rating);
-//        new Handler().postDelayed(() ->  notifyDataSetChanged(), 1000);
-//    }
+    private void atualizar(float rating, PokemonModel pokemonModel) {
+        System.out.println(pokemonModel.getName());
+        RotinaModel toSave = new RotinaModel(pokemonModel.getId(), rating);
+        rotinaDAO.inserir(toSave);
+        System.out.println(rotinaDAO.listarTodos());
+        pokemonModel.setRating(rating);
+        new Handler().postDelayed(() ->  notifyDataSetChanged(), 1000);
+    }
 
 
     @Override

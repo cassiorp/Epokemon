@@ -45,17 +45,22 @@ public class MainActivity extends AppCompatActivity {
 
     private PokeApiService pokeApiService;
     private ActivityMainBinding binding;
-    private List<PokemonModel> pokeApiResponse = new ArrayList<>();
-    private List<PokemonModel> comprados = new ArrayList<>();
-    private SearchView searchView;
-    private FloatingActionButton floatingActionButton;
+
+    private List<PokemonModel> pokeApiResponse;
+    private List<PokemonModel> comprados;
+
     private AdapterRecyclerViewComprados adaptadorDoRecyclerViewComprados;
     private AdapterRecylcerViewBuy adapterRecylcerViewBuy;
+
+    private SearchView searchView;
+    private FloatingActionButton floatingActionButton;
+
     private Integer RECOGNIZER_RESULT = 1;
+
     private View viewHome;
     private View viewStore;
 
-    //private RotinaDAO rotinaDAO;
+    private RotinaDAO rotinaDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +69,13 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        pokeApiService = new PokeApiService(this);
+        pokeApiResponse = new ArrayList<>();
+        comprados = new ArrayList<>();
+
+        adaptadorDoRecyclerViewComprados = new AdapterRecyclerViewComprados();
+        adapterRecylcerViewBuy = new AdapterRecylcerViewBuy();
+
+        pokeApiService = new PokeApiService(getApplicationContext());
 
         viewHome = findViewById(R.id.navigation_home);
         viewStore = findViewById(R.id.navigation_store);
@@ -72,23 +83,20 @@ public class MainActivity extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        adaptadorDoRecyclerViewComprados = new AdapterRecyclerViewComprados();
-        adapterRecylcerViewBuy = new AdapterRecylcerViewBuy();
 
-        // inicializar a base de dados
         BaseDeDadosDaApp db = BaseDeDadosDaApp.getInstance(this);
+        rotinaDAO = db.getRotinaDAO();
 
-//        rotinaDAO = db.getRotinaDAO();
-//        adaptadorDoRecyclerViewComprados.setPokemonDAO(rotinaDAO);
+        adaptadorDoRecyclerViewComprados.setPokemonDAO(rotinaDAO);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 pokeApiService.fetchComprados(comprados, adaptadorDoRecyclerViewComprados);
                 pokeApiService.fetchData(pokeApiResponse, adapterRecylcerViewBuy);
-                adaptadorDoRecyclerViewComprados.setView(viewHome);
                 adapterRecylcerViewBuy.setView(viewStore);
                 adapterRecylcerViewBuy.notifyDataSetChanged();
+                adaptadorDoRecyclerViewComprados.setView(viewHome);
                 adaptadorDoRecyclerViewComprados.notifyDataSetChanged();
             }
         }).start();
@@ -101,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent searchIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 searchIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 searchIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Procure");
+                searchIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-br");
                 startActivityForResult(searchIntent, RECOGNIZER_RESULT);
             }
         });
@@ -113,32 +122,29 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adaptadorDoRecyclerViewComprados.getFilter().filter(newText);
+                //adaptadorDoRecyclerViewComprados.getFilter().filter(newText);
                 adapterRecylcerViewBuy.getFilter().filter(newText);
                 return false;
             }
         });
 
-//        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-//        mShakeDetector = new ShakeDetector(new ShakeDetector.OnShakeListener() {
-//            @Override
-//            public void onShake() {
-//                if (!pokeApiResponse.isEmpty()) {
-//                    List<PokemonModel> copy = new ArrayList<>(pokeApiResponse);
-//                    Collections.shuffle(copy);
-//                    System.out.println(copy.get(0).getName());
-////                    Integer sorteado = new Random().nextInt(pokeApiResponse.size());
-////                    PokemonModel pokemonSorteado = pokeApiResponse.get(sorteado);
-//                    searchView.setQuery(copy.get(0).getName(), true);
-//                }
-//            }
-//        });
+        mShakeDetector = new ShakeDetector(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake() {
+                if (!pokeApiResponse.isEmpty()) {
+                    List<PokemonModel> copy = new ArrayList<>(pokeApiResponse);
+                    Collections.shuffle(copy);
+                    searchView.setQuery(copy.get(0).getName(), true);
+                }
+            }
+        });
 
-//        BroadcastReceiver receiverPowerAdapter = new PowerConnectionReceiver();
-//        IntentFilter filterPowerAdapter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
-//        this.registerReceiver(receiverPowerAdapter, filterPowerAdapter);
+        BroadcastReceiver receiverPowerAdapter = new PowerConnectionReceiver();
+        IntentFilter filterPowerAdapter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
+        this.registerReceiver(receiverPowerAdapter, filterPowerAdapter);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -161,41 +167,41 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        mSensorManager.unregisterListener(mShakeDetector);
-//        super.onPause();
-//    }
-//
-//    public ShakeDetector getmShakeDetector() {
-//        return mShakeDetector;
-//    }
-//
-//    public void setmShakeDetector(ShakeDetector mShakeDetector) {
-//        this.mShakeDetector = mShakeDetector;
-//    }
-//
-//    public SensorManager getmSensorManager() {
-//        return mSensorManager;
-//    }
-//
-//    public void setmSensorManager(SensorManager mSensorManager) {
-//        this.mSensorManager = mSensorManager;
-//    }
-//
-//    public Sensor getmAccelerometer() {
-//        return mAccelerometer;
-//    }
-//
-//    public void setmAccelerometer(Sensor mAccelerometer) {
-//        this.mAccelerometer = mAccelerometer;
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    public void onPause() {
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+    }
+
+    public ShakeDetector getmShakeDetector() {
+        return mShakeDetector;
+    }
+
+    public void setmShakeDetector(ShakeDetector mShakeDetector) {
+        this.mShakeDetector = mShakeDetector;
+    }
+
+    public SensorManager getmSensorManager() {
+        return mSensorManager;
+    }
+
+    public void setmSensorManager(SensorManager mSensorManager) {
+        this.mSensorManager = mSensorManager;
+    }
+
+    public Sensor getmAccelerometer() {
+        return mAccelerometer;
+    }
+
+    public void setmAccelerometer(Sensor mAccelerometer) {
+        this.mAccelerometer = mAccelerometer;
+    }
 
     public ActivityMainBinding getBinding() {
         return binding;
@@ -285,11 +291,11 @@ public class MainActivity extends AppCompatActivity {
         this.pokeApiService = pokeApiService;
     }
 
-//    public RotinaDAO getRotinaDAO() {
-//        return rotinaDAO;
-//    }
-//
-//    public void setRotinaDAO(RotinaDAO rotinaDAO) {
-//        this.rotinaDAO = rotinaDAO;
-//    }
+    public RotinaDAO getRotinaDAO() {
+        return rotinaDAO;
+    }
+
+    public void setRotinaDAO(RotinaDAO rotinaDAO) {
+        this.rotinaDAO = rotinaDAO;
+    }
 }
